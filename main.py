@@ -5,7 +5,7 @@ app = FastAPI()
 
 @app.get("/")
 def read_root():
-    return {'root':'root'}
+    return {"Use":"/XdY para rolar dados."}
 
 @app.get("/{x}d{y}")
 def rolarDados(x:int, y:int):
