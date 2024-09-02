@@ -3,26 +3,8 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
-@app.get("/")
-def root():
-    return {"Use":"/XdY para rolar dados."}
-
-@app.get("/{x}d{y}")
-def rolar_dados(x:int, y:int):
-    resultados = []
-    for i in range(x):
-        resultados.append(random.randrange(0,y)+1)
-
-    return {
-        "Quantidade":x,
-        "Lados":y,
-        "Resultados":resultados
-    }
-
-@app.get("/gerarAtributos")
-def gerar_atributos():
+def gerar_atributos() -> list:
     atributos = []
-    removidos = []
     for i in range(6):
         tempList = []
         for j in range(4):
@@ -36,5 +18,33 @@ def gerar_atributos():
             tempVar+=dado
 
         atributos.append(tempVar)
+    
+    return atributos
 
-    return {"Atributos":atributos}
+@app.get("/")
+def root():
+    return {"Use":"/XdY para rolar dados."}
+
+# Rola dados Simples
+@app.get("/{x}d{y}")
+def rolar_dados(x:int, y:int):
+    resultados = []
+    for i in range(x):
+        resultados.append(random.randrange(0,y)+1)
+
+    resultados.sort()
+
+    return {
+        "Quantidade":x,
+        "Lados":y,
+        "Resultados":resultados
+    }
+
+# Rola atributos de Tormenta20/DnD
+@app.get("/t20/atributos")
+def t20_atributos():
+    return {"Atributos": gerar_atributos()}
+
+# TODO
+# Gerar fichas para players
+# Gerar fichas para NPCs
