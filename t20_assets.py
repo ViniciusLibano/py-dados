@@ -1,3 +1,23 @@
+class ClassesT20:
+    def __init__(
+        self, 
+        id   : int, 
+        desc : str, 
+        pv   : int, 
+        pm   : int, 
+        per  : str,
+        pro  : str,
+        hab  : str
+    ):
+        self.id   : int = id
+        self.desc : str = desc
+        self.pv   : int = pv
+        self.pm   : int = pm
+        self.per  : list[str] = per.split(";") if per else None
+        self.pro  : list[str] = pro.split(";") if pro else None
+        self.hab  : list[str] = hab.split(";") if hab else None
+
+
 classes = [
     'Arcanista',
     'Barbaro',

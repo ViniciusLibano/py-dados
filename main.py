@@ -1,8 +1,23 @@
 from random import randrange
 from fastapi import FastAPI
-import t20_lists
+import t20_assets
+import sqlite3
 
 app = FastAPI()
+
+def consultar_classes() -> list[t20_assets.ClassesT20]:
+    conn = sqlite3.connect('dados.db')
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT * FROM classes;')
+    resultado: list[t20_assets.ClassesT20] = []
+    
+    for linha in cursor.fetchall():
+        resultado.append(t20_assets.ClassesT20(linha[0],linha[1],linha[2],linha[3],linha[4],linha[5],linha[6]));
+
+    conn.close()
+    
+    return resultado
 
 def gerar_atributos() -> list:
     atributos = []
@@ -49,14 +64,14 @@ def t20_atributos():
 @app.get("/t20/ficha_player")
 def t20_ficha_player(classe=None, raca=None):
     atributosFicha = gerar_atributos();
-    classeFicha = t20_lists.classes[randrange(0,len(t20_lists.classes))]
-    racaFicha = t20_lists.racas[randrange(0,len(t20_lists.racas))]
-    origemFicha = t20_lists.origens[randrange(0,len(t20_lists.origens))]
+    classeFicha = t20_assets.classes[randrange(0,len(t20_assets.classes))]
+    racaFicha = t20_assets.racas[randrange(0,len(t20_assets.racas))]
+    origemFicha = t20_assets.origens[randrange(0,len(t20_assets.origens))]
 
     if (classe != None):
         classeFicha = classe;
     
-    if (classe != None):
+    if (raca != None):
         racaFicha = raca
 
     return {
@@ -66,6 +81,25 @@ def t20_ficha_player(classe=None, raca=None):
         "Raca":racaFicha
     }
 
+@app.get("/teste")
+def teste():
+    classes_t20 = []
+
+    for classe in consultar_classes():
+        temp = {
+            "id_classe": classe.id,
+            "ds_classe": classe.desc,
+            "pv_classe": classe.pv,
+            "pm_classe": classe.pm,
+            "pericias": classe.per,
+            "proficiencias": classe.pro,
+            "habilidades": classe.hab
+        }
+
+        classes_t20.append(temp)
+
+
+    return {"Classes":classes_t20}
 
 # TODO
 # Gerar fichas para players
